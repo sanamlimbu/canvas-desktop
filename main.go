@@ -21,7 +21,7 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
-	baseURL := getenv("CANVAS_BASE_URL", "https://skillsaustralia.instructure.com")
+	baseURL := getenv("CANVAS_BASE_URL", "https://skillsaustralia.test.instructure.com")
 	accessToken := getenv("CANVAS_ACCESS_TOKEN", "")
 	pageSizeStr := getenv("CANVAS_PAGE_SIZE", "50")
 	pageSize, err := strconv.Atoi(pageSizeStr)
