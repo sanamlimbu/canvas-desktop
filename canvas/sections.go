@@ -70,7 +70,7 @@ func (c *APIClient) GetSectionsByCourseID(courseID int) ([]*Section, error) {
 	return sections, nil
 }
 
-func (c *APIClient) GetSectionsByID(sectionID int) (*Section, error) {
+func (c *APIClient) GetSectionByID(sectionID int) (*Section, error) {
 	section := &Section{}
 	requestURL := fmt.Sprintf("%s/sections/%d", c.BaseURL, sectionID)
 

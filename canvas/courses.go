@@ -9,6 +9,28 @@ import (
 	"github.com/ninja-software/terror/v2"
 )
 
+type CourseEnrollmentType string
+
+const (
+	TeacherCourseEnrollment  CourseEnrollmentType = "teacher"
+	StudenCourseEnrollment   CourseEnrollmentType = "student"
+	TaCourseEnrollment       CourseEnrollmentType = "ta"
+	ObserverCourseEnrollment CourseEnrollmentType = "observer"
+	DesignerCourseEnrollment CourseEnrollmentType = "designer"
+)
+
+// For Wails EnumBind
+var AllCourseEnrollmentType = []struct {
+	Value  CourseEnrollmentType
+	TSName string
+}{
+	{TeacherCourseEnrollment, "TEACHER"},
+	{StudenCourseEnrollment, "STUDENT"},
+	{TaCourseEnrollment, "TA"},
+	{ObserverCourseEnrollment, "OBSERVER"},
+	{DesignerCourseEnrollment, "DESIGNER"},
+}
+
 type Course struct {
 	ID               int    `json:"id"`
 	Name             string `json:"name"`
@@ -61,9 +83,50 @@ func (c *APIClient) GetCourseByID(id int) (*Course, error) {
 }
 
 // enrollmentType allowed values: teacher, student, ta, observer, designer
-func (c *APIClient) GetCoursesByAccount(account *Account, enrollmentType string) ([]*Course, error) {
+func (c *APIClient) GetCoursesByAccount(account *Account, enrollmentType CourseEnrollmentType) ([]*Course, error) {
 	courses := []*Course{}
-	requestURL := fmt.Sprintf("%s/accounts/%d/courses?page=1&per_page=%d&enrollment_type[]=%s", c.BaseURL, account.ID, c.PageSize, enrollmentType)
+	requestURL := fmt.Sprintf("%s/accounts/%d/courses?page=1&per_page=%d&enrollment_type[]=%s&include[]=account", c.BaseURL, account.ID, c.PageSize, enrollmentType)
+
+	for {
+		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
+		if err != nil {
+			return nil, terror.Error(err, "cannot create http request")
+		}
+		bearer := "Bearer " + c.AccessToken
+		req.Header.Add("Authorization", bearer)
+
+		res, err := c.do(req)
+		if err != nil {
+			return nil, terror.Error(err, "cannot make http call")
+		}
+
+		body, err := io.ReadAll(res.Body)
+		res.Body.Close()
+		if err != nil {
+			return nil, terror.Error(err, "cannot read response body")
+		}
+
+		_courses := []*Course{}
+		if err := json.Unmarshal(body, &_courses); err != nil {
+			return nil, terror.Error(err, "cannot unmarshall response body")
+		}
+		courses = append(courses, _courses...)
+
+		nextURL := getNextURL(res.Header.Get("Link"))
+		if nextURL == "" {
+			break
+		}
+
+		requestURL = nextURL
+	}
+
+	return courses, nil
+}
+
+// enrollmentType allowed values: teacher, student, ta, observer, designer
+func (c *APIClient) GetCoursesByAccountID(accountID int, enrollmentType CourseEnrollmentType) ([]*Course, error) {
+	courses := []*Course{}
+	requestURL := fmt.Sprintf("%s/accounts/%d/courses?page=1&per_page=%d&enrollment_type[]=%s&include[]=account", c.BaseURL, accountID, c.PageSize, enrollmentType)
 
 	for {
 		req, err := http.NewRequest(http.MethodGet, requestURL, nil)

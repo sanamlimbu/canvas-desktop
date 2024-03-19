@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"slices"
 
 	"github.com/ninja-software/terror/v2"
 )
@@ -38,6 +37,28 @@ type EnrollmentResult struct {
 	CurrentGrade  string  `csv:"Current Grade"`
 	CurrentScore  float32 `csv:"Current Score"`
 	GradesURL     string  `csv:"Grades URL"`
+}
+
+type EnrollmentType string
+
+const (
+	TeacherEnrollment  EnrollmentType = "TeacherEnrollment"
+	StudentEnrollment  EnrollmentType = "StudentEnrollment"
+	TaEnrollment       EnrollmentType = "TaEnrollment"
+	DesignerEnrollment EnrollmentType = "DesignerEnrollment"
+	ObserverEnrollment EnrollmentType = "ObserverEnrollment"
+)
+
+// For Wails EnumBind
+var AllEnrollmentType = []struct {
+	Value  EnrollmentType
+	TSName string
+}{
+	{TeacherEnrollment, "TEACHER"},
+	{StudentEnrollment, "STUDENT"},
+	{TaEnrollment, "TA"},
+	{DesignerEnrollment, "DESIGNER"},
+	{ObserverEnrollment, "OBSERVER"},
 }
 
 func (c *APIClient) GetEnrollmentsByUserID(userID int) ([]*Enrollment, error) {
@@ -114,14 +135,12 @@ func (c *APIClient) GetAllEnrollmentsResultsByUserID(userID int) ([]*EnrollmentR
 	return results, nil
 }
 
-// enrollmentType accepted values: All, StudentEnrollment, TeacherEnrollment, TaEnrollment, DesignerEnrollment, and ObserverEnrollment
-func (c *APIClient) GetEnrollmentsBySectionID(sectionID int, enrollmentTypes ...string) ([]*Enrollment, error) {
+// enrollmentType accepted values: StudentEnrollment, TeacherEnrollment, TaEnrollment, DesignerEnrollment, and ObserverEnrollment
+func (c *APIClient) GetEnrollmentsBySectionID(sectionID int, enrollmentTypes ...EnrollmentType) ([]*Enrollment, error) {
 	enrollments := []*Enrollment{}
 	requestURL := fmt.Sprintf("%s/sections/%d/enrollments?page=1&per_page=%d", c.BaseURL, sectionID, c.PageSize)
-	if !slices.Contains(enrollmentTypes, "All") {
-		for _, enrollmentType := range enrollmentTypes {
-			requestURL += fmt.Sprintf(`&type[]=%s`, enrollmentType)
-		}
+	for _, enrollmentType := range enrollmentTypes {
+		requestURL += fmt.Sprintf(`&type[]=%s`, enrollmentType)
 	}
 
 	for {

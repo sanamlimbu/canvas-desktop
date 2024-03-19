@@ -30,9 +30,9 @@ func main() {
 	rl := rate.NewLimiter(rate.Every(10*time.Second), 1000) // 1000 requests every 10 seconds
 	client := canvas.NewAPIClient(baseURL, accessToken, pageSize, http.DefaultClient, rl)
 
-	accountID := 113
+	accountID := 111
 
-	// courses, err := client.GetCoursesByAccountID(133, "student")
+	// courses, err := client.GetCoursesByAccountID(133, StudentCourseEnrollment)
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }

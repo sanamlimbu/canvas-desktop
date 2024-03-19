@@ -2,13 +2,26 @@ package canvas
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/ninja-software/terror/v2"
 	"golang.org/x/time/rate"
 )
+
+type Controller struct {
+	APIClient *APIClient
+}
+
+func NewController(client *APIClient) *Controller {
+	return &Controller{
+		APIClient: client,
+	}
+}
 
 type APIClient struct {
 	BaseURL      string
@@ -61,4 +74,35 @@ func getNextURL(linkTxt string) string {
 	}
 
 	return url
+}
+
+func (c *APIClient) GetAccessToken() string {
+	accessToken := getenv("CANVAS_ACCESS_TOKEN", "")
+	if accessToken != "" {
+		return "error"
+	}
+
+	return accessToken
+}
+
+func getenv(key string, other string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return other
+	}
+
+	return value
+}
+
+func (c *APIClient) LongRunningSleepFunc(ctx context.Context) {
+	select {
+	case <-ctx.Done():
+		return
+	default:
+	}
+
+	for i := 0; i < 100; i++ {
+		fmt.Println("index: ", i)
+		time.Sleep(4 * time.Second)
+	}
 }

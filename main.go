@@ -3,6 +3,7 @@ package main
 import (
 	"canvas-desktop/canvas"
 	"embed"
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -21,16 +22,21 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
-	baseURL := getenv("CANVAS_BASE_URL", "https://skillsaustralia.test.instructure.com")
+	baseURL := getenv("CANVAS_BASE_URL", "https://skillsaustralia.instructure.com/api/v1")
 	accessToken := getenv("CANVAS_ACCESS_TOKEN", "")
-	pageSizeStr := getenv("CANVAS_PAGE_SIZE", "50")
+	pageSizeStr := getenv("CANVAS_PAGE_SIZE", "100")
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil {
-		panic(err.Error)
+		println("Error:", err.Error())
+	}
+
+	if accessToken == "" {
+		println("Error:", fmt.Errorf("missing access token"))
 	}
 
 	rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 requests every 10 seconds
 	client := canvas.NewAPIClient(baseURL, accessToken, pageSize, http.DefaultClient, rl)
+	controller := canvas.NewController(client)
 
 	// Create application with options
 	err = wails.Run(&options.App{
@@ -45,6 +51,13 @@ func main() {
 		Bind: []interface{}{
 			app,
 			client,
+			controller,
+		},
+		EnumBind: []interface {
+		}{
+			canvas.AllAssignmentBucket,
+			canvas.AllCourseEnrollmentType,
+			canvas.AllEnrollmentType,
 		},
 	})
 
