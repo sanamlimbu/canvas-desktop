@@ -265,23 +265,9 @@ func (c *APIClient) GetAssignmentsByCourse(course *Course, bucket AssignmentBuck
 					assignment.LockAt = ""
 					assignment.UnlockAt = ""
 				} else {
-					dueAt, err := UTCToPerthTime(dates[section.SectionID].DueAt)
-					if err != nil {
-						return nil, terror.Error(err, "error converting UTC to Perth time")
-					}
-
-					lockAt, err := UTCToPerthTime(dates[section.SectionID].LockAt)
-					if err != nil {
-						return nil, terror.Error(err, "error converting UTC to Perth time")
-					}
-
-					unlockAt, err := UTCToPerthTime(dates[section.SectionID].UnlockAt)
-					if err != nil {
-						return nil, terror.Error(err, "error converting UTC to Perth time")
-					}
-					assignment.DueAt = dueAt
-					assignment.LockAt = lockAt
-					assignment.UnlockAt = unlockAt
+					assignment.DueAt = dates[section.SectionID].DueAt
+					assignment.LockAt = dates[section.SectionID].LockAt
+					assignment.UnlockAt = dates[section.SectionID].UnlockAt
 				}
 
 				assignments = append(assignments, assignment)
