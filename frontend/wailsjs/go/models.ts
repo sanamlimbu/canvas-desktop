@@ -1,5 +1,28 @@
 export namespace canvas {
 	
+	export enum AssignmentBucket {
+	    PAST = "past",
+	    OVERDUE = "overdue",
+	    UPDATED = "undated",
+	    UNGRADED = "ungraded",
+	    UNSUBMITTED = "unsubmitted",
+	    UPCOMING = "upcoming",
+	    FUTURE = "future",
+	}
+	export enum CourseEnrollmentType {
+	    TEACHER = "teacher",
+	    STUDENT = "student",
+	    TA = "ta",
+	    OBSERVER = "observer",
+	    DESIGNER = "designer",
+	}
+	export enum EnrollmentType {
+	    TEACHER = "TeacherEnrollment",
+	    STUDENT = "StudentEnrollment",
+	    TA = "TaEnrollment",
+	    DESIGNER = "DesignerEnrollment",
+	    OBSERVER = "ObserverEnrollment",
+	}
 	export class Account {
 	    id: number;
 	    name: string;
@@ -42,12 +65,12 @@ export namespace canvas {
 	        this.set_id = source["set_id"];
 	    }
 	}
-	export class  {
+	export class SectionNeedsGrading {
 	    section_id: number;
 	    needs_grading_count: number;
 	
 	    static createFrom(source: any = {}) {
-	        return new (source);
+	        return new SectionNeedsGrading(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -62,7 +85,7 @@ export namespace canvas {
 	    name: string;
 	    needs_grading_count: number;
 	    published: boolean;
-	    needs_grading_count_by_section: [];
+	    needs_grading_count_by_section: SectionNeedsGrading[];
 	    all_dates: AssignmentDate[];
 	
 	    static createFrom(source: any = {}) {
@@ -76,7 +99,7 @@ export namespace canvas {
 	        this.name = source["name"];
 	        this.needs_grading_count = source["needs_grading_count"];
 	        this.published = source["published"];
-	        this.needs_grading_count_by_section = this.convertValues(source["needs_grading_count_by_section"], );
+	        this.needs_grading_count_by_section = this.convertValues(source["needs_grading_count_by_section"], SectionNeedsGrading);
 	        this.all_dates = this.convertValues(source["all_dates"], AssignmentDate);
 	    }
 	

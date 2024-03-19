@@ -64,6 +64,6 @@ var Qualifications []Qualification = []Qualification{
 	},
 }
 
-func (c *APIClient) GetQualifications() []Qualification {
+func (c *Controller) GetQualifications() []Qualification {
 	return Qualifications
 }

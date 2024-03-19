@@ -7,12 +7,11 @@ function App() {
   const [exportItem, setExportItem] = useState<Export>(
     Export.UngradedAssignments
   );
-  const [value, setValue] = useState("");
-  const updateExportItem = (item: Export) => {
-    setExportItem(item);
-  };
+  const [inProgress, setInProgress] = useState(false);
 
-  function greet() {}
+  const changeInProgres = (val: boolean) => {
+    setInProgress(val);
+  };
 
   return (
     <div id="App">
@@ -22,24 +21,33 @@ function App() {
           flexDirection: "row",
           justifyContent: "center",
           gap: "1em",
-          marginTop: "1em",
+          paddingTop: "1em",
+          paddingBottom: "1em",
+          borderBottom: "1px solid white",
+          marginBottom: "1em",
         }}
       >
-        <label>Please choose an action item</label>
+        <label>Please select an action:</label>
         <select
           onChange={(e) => {
             setExportItem(e.target.value as Export);
           }}
+          disabled={inProgress}
         >
-          <option value={Export.UngradedAssignments}>
+          <option value={Export.UngradedAssignments} style={{ padding: 10 }}>
             Export ungraded assignments
           </option>
-          <option value={Export.StudentAssessments}>
+          <option value={Export.StudentAssessments} style={{ padding: 10 }}>
             Export student assessments
           </option>
         </select>
       </div>
-      {exportItem === Export.UngradedAssignments && <UngradedSubmissions />}
+      {exportItem === Export.UngradedAssignments && (
+        <UngradedSubmissions
+          inProgress={inProgress}
+          changeInProgress={changeInProgres}
+        />
+      )}
     </div>
   );
 }

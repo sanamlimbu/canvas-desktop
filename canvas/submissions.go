@@ -74,13 +74,13 @@ func (c *APIClient) GetSubmissions(courseID int, assignmentID int) ([]Submission
 
 func (c *APIClient) GetUngradedSubmissionsByAccount(account *Account) ([]*Submission, error) {
 	submissions := []*Submission{}
-	courses, err := c.GetCoursesByAccount(account, "student")
+	courses, err := c.GetCoursesByAccount(account, StudenCourseEnrollment)
 	if err != nil {
 		return nil, terror.Error(err, "error retreiving courses")
 	}
 
 	for _, course := range courses[:2] {
-		assignments, err := c.GetAssignmentsByCourseID(course.ID, "ungraded")
+		assignments, err := c.GetAssignmentsByCourse(course, "ungraded")
 		if err != nil {
 			return nil, terror.Error(err, "error retreiving assignments")
 		}
