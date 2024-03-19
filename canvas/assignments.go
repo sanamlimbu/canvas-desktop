@@ -39,19 +39,19 @@ var AllAssignmentBucket = []struct {
 type Assignment struct {
 	ID                         int                    `json:"id" csv:"-"`
 	CourseID                   int                    `json:"course_id" csv:"-"`
-	Account                    string                 `json:"-" csv:"Qualification"`
-	CourseName                 string                 `json:"-" csv:"Course Name"`
+	Account                    string                 `json:"qualification" csv:"Qualification"`
+	CourseName                 string                 `json:"course_name" csv:"Course Name"`
 	Name                       string                 `json:"name" csv:"Assignment"`
-	DueAt                      string                 `json:"-" csv:"Due"`
-	UnlockAt                   string                 `json:"-" csv:"Available From"`
-	LockAt                     string                 `json:"-" csv:"Until"`
+	DueAt                      string                 `json:"due_at" csv:"Due"`
+	UnlockAt                   string                 `json:"unlock_at" csv:"Available From"`
+	LockAt                     string                 `json:"lock_at" csv:"Until"`
 	NeedsGradingCount          int                    `json:"needs_grading_count" csv:"-"`
-	Section                    string                 `json:"-" csv:"Section"`
-	NeedingGradingSection      int                    `json:"-" csv:"Needs Grading"`
-	Teachers                   string                 `json:"-" csv:"Teachers"`
-	Status                     string                 `json:"-" csv:"Status"`
+	Section                    string                 `json:"section" csv:"Section"`
+	NeedingGradingSection      int                    `json:"needs_grading_section" csv:"Needs Grading"`
+	Teachers                   string                 `json:"teachers" csv:"Teachers"`
+	Status                     string                 `json:"status" csv:"Status"`
 	Published                  bool                   `json:"published" csv:"Published"`
-	GradebookURL               string                 `json:"-" csv:"Gradebook URL"`
+	GradebookURL               string                 `json:"gradebook_url" csv:"Gradebook URL"`
 	NeedsGradingCountBySection []*SectionNeedsGrading `json:"needs_grading_count_by_section" csv:"-"`
 	AllDates                   []*AssignmentDate      `json:"all_dates" csv:"-"`
 }

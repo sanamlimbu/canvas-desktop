@@ -1,14 +1,5 @@
 export namespace canvas {
 	
-	export enum AssignmentBucket {
-	    PAST = "past",
-	    OVERDUE = "overdue",
-	    UPDATED = "undated",
-	    UNGRADED = "ungraded",
-	    UNSUBMITTED = "unsubmitted",
-	    UPCOMING = "upcoming",
-	    FUTURE = "future",
-	}
 	export enum CourseEnrollmentType {
 	    TEACHER = "teacher",
 	    STUDENT = "student",
@@ -22,6 +13,15 @@ export namespace canvas {
 	    TA = "TaEnrollment",
 	    DESIGNER = "DesignerEnrollment",
 	    OBSERVER = "ObserverEnrollment",
+	}
+	export enum AssignmentBucket {
+	    PAST = "past",
+	    OVERDUE = "overdue",
+	    UPDATED = "undated",
+	    UNGRADED = "ungraded",
+	    UNSUBMITTED = "unsubmitted",
+	    UPCOMING = "upcoming",
+	    FUTURE = "future",
 	}
 	export class Account {
 	    id: number;
@@ -82,9 +82,19 @@ export namespace canvas {
 	export class Assignment {
 	    id: number;
 	    course_id: number;
+	    qualification: string;
+	    course_name: string;
 	    name: string;
+	    due_at: string;
+	    unlock_at: string;
+	    lock_at: string;
 	    needs_grading_count: number;
+	    section: string;
+	    needs_grading_section: number;
+	    teachers: string;
+	    status: string;
 	    published: boolean;
+	    gradebook_url: string;
 	    needs_grading_count_by_section: SectionNeedsGrading[];
 	    all_dates: AssignmentDate[];
 	
@@ -96,9 +106,19 @@ export namespace canvas {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
 	        this.course_id = source["course_id"];
+	        this.qualification = source["qualification"];
+	        this.course_name = source["course_name"];
 	        this.name = source["name"];
+	        this.due_at = source["due_at"];
+	        this.unlock_at = source["unlock_at"];
+	        this.lock_at = source["lock_at"];
 	        this.needs_grading_count = source["needs_grading_count"];
+	        this.section = source["section"];
+	        this.needs_grading_section = source["needs_grading_section"];
+	        this.teachers = source["teachers"];
+	        this.status = source["status"];
 	        this.published = source["published"];
+	        this.gradebook_url = source["gradebook_url"];
 	        this.needs_grading_count_by_section = this.convertValues(source["needs_grading_count_by_section"], SectionNeedsGrading);
 	        this.all_dates = this.convertValues(source["all_dates"], AssignmentDate);
 	    }
