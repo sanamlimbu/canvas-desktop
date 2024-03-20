@@ -8,15 +8,12 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"time"
-
-	"golang.org/x/time/rate"
 )
 
 func main() {
 
 	baseURL := getenv("CANVAS_BASE_URL", "https://skillsaustralia.instructure.com/api/v1")
-	accessToken := getenv("CANVAS_ACCESS_TOKEN", "")
+	accessToken := getenv("CANVAS_ACCESS_TOKEN", "18033~qQ5yZwSntWRrwRv4fOH2Y7ZnfmCN3jfpsnXLlzABxPeZoAkejTxQFNyrSN4DSxnq")
 	pageSizeStr := getenv("CANVAS_PAGE_SIZE", "100")
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil {
@@ -27,8 +24,8 @@ func main() {
 		panic("missing access token")
 	}
 
-	rl := rate.NewLimiter(rate.Every(10*time.Second), 1000) // 1000 requests every 10 seconds
-	client := canvas.NewAPIClient(baseURL, accessToken, pageSize, http.DefaultClient, rl)
+	//rl := rate.NewLimiter(rate.Every(10*time.Second), 1000) // 1000 requests every 10 seconds
+	client := canvas.NewAPIClient(baseURL, accessToken, pageSize, http.DefaultClient)
 
 	accountID := 111
 

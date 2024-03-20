@@ -1,16 +1,12 @@
 package canvas
 
 import (
-	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/ninja-software/terror/v2"
-	"golang.org/x/time/rate"
 )
 
 type Controller struct {
@@ -24,30 +20,31 @@ func NewController(client *APIClient) *Controller {
 }
 
 type APIClient struct {
-	BaseURL      string
-	AccessToken  string
-	PageSize     int
-	Client       *http.Client
-	RateLimitter *rate.Limiter
+	BaseURL     string
+	AccessToken string
+	PageSize    int
+	Client      *http.Client
+	//	RateLimitter *rate.Limiter
 }
 
-func NewAPIClient(baseURL string, accessToken string, pageSize int, client *http.Client, rateLimitter *rate.Limiter) *APIClient {
+func NewAPIClient(baseURL string, accessToken string, pageSize int, client *http.Client, // rateLimitter *rate.Limiter
+) *APIClient {
 	return &APIClient{
-		BaseURL:      baseURL,
-		AccessToken:  accessToken,
-		PageSize:     pageSize,
-		Client:       client,
-		RateLimitter: rateLimitter,
+		BaseURL:     baseURL,
+		AccessToken: accessToken,
+		PageSize:    pageSize,
+		Client:      client,
+		//	RateLimitter: rateLimitter,
 	}
 }
 
 // https://medium.com/mflow/rate-limiting-in-golang-http-client-a22fba15861a
 func (c *APIClient) do(req *http.Request) (*http.Response, error) {
-	ctx := context.Background()
-	err := c.RateLimitter.Wait(ctx)
-	if err != nil {
-		return nil, terror.Error(err, "error rate limmiter wait")
-	}
+	//	ctx := context.Background()
+	// err := c.RateLimitter.Wait(ctx)
+	// if err != nil {
+	// 	return nil, terror.Error(err, "error rate limmiter wait")
+	// }
 
 	resp, err := c.Client.Do(req)
 	if err != nil {
@@ -92,17 +89,4 @@ func getenv(key string, other string) string {
 	}
 
 	return value
-}
-
-func (c *APIClient) LongRunningSleepFunc(ctx context.Context) {
-	select {
-	case <-ctx.Done():
-		return
-	default:
-	}
-
-	for i := 0; i < 100; i++ {
-		fmt.Println("index: ", i)
-		time.Sleep(4 * time.Second)
-	}
 }

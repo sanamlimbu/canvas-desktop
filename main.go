@@ -7,12 +7,10 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
-	"golang.org/x/time/rate"
 )
 
 //go:embed all:frontend/dist
@@ -23,7 +21,7 @@ func main() {
 	app := NewApp()
 
 	baseURL := getenv("CANVAS_BASE_URL", "https://skillsaustralia.instructure.com/api/v1")
-	accessToken := getenv("CANVAS_ACCESS_TOKEN", "")
+	accessToken := getenv("CANVAS_ACCESS_TOKEN", "18033~qQ5yZwSntWRrwRv4fOH2Y7ZnfmCN3jfpsnXLlzABxPeZoAkejTxQFNyrSN4DSxnq")
 	pageSizeStr := getenv("CANVAS_PAGE_SIZE", "100")
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil {
@@ -34,8 +32,8 @@ func main() {
 		println("Error:", fmt.Errorf("missing access token"))
 	}
 
-	rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 requests every 10 seconds
-	client := canvas.NewAPIClient(baseURL, accessToken, pageSize, http.DefaultClient, rl)
+	//rl := rate.NewLimiter(rate.Every(10*time.Second), 1000)                           // 100 requests every 10 seconds
+	client := canvas.NewAPIClient(baseURL, accessToken, pageSize, http.DefaultClient)
 	controller := canvas.NewController(client)
 
 	// Create application with options
@@ -67,6 +65,10 @@ func main() {
 }
 
 func getenv(key string, other string) string {
+	if other != "" {
+		return other
+	}
+
 	value := os.Getenv(key)
 	if len(value) == 0 {
 		return other
