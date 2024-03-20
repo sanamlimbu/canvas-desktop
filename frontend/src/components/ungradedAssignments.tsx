@@ -57,7 +57,6 @@ export default function UngradedAssignments({
       setProgress(100);
       setSuccessMsg("Successfully created 2 csv files in currrent folder.");
     } catch (err: any) {
-      // setErrorMsg("Something went wrong.");
       setErrorMsg(err);
     } finally {
       changeInProgress(false);

@@ -9,3 +9,7 @@ export function ExportAssignmentsResults(arg1, arg2) {
 export function ExportAssignmentsStatus(arg1, arg2) {
   return window['go']['main']['App']['ExportAssignmentsStatus'](arg1, arg2);
 }
+
+export function ExportEnrollmentsResults(arg1, arg2) {
+  return window['go']['main']['App']['ExportEnrollmentsResults'](arg1, arg2);
+}

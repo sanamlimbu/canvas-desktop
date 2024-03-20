@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
-import UngradedSubmissions from "./components/ungradedSubmissions";
+import StudentEnrollmentsResult from "./components/studentEnrollmentsResult";
+import UngradedSubmissions from "./components/ungradedAssignments";
 import { Export } from "./types";
 
 function App() {
@@ -37,13 +38,22 @@ function App() {
           <option value={Export.UngradedAssignments} style={{ padding: 10 }}>
             Export ungraded assignments
           </option>
-          <option value={Export.StudentAssessments} style={{ padding: 10 }}>
-            Export student assessments
+          <option
+            value={Export.StudentEnrollmentResults}
+            style={{ padding: 10 }}
+          >
+            Export student enrollments result
           </option>
         </select>
       </div>
       {exportItem === Export.UngradedAssignments && (
         <UngradedSubmissions
+          inProgress={inProgress}
+          changeInProgress={changeInProgres}
+        />
+      )}
+      {exportItem === Export.StudentEnrollmentResults && (
+        <StudentEnrollmentsResult
           inProgress={inProgress}
           changeInProgress={changeInProgres}
         />

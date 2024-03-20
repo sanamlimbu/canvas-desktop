@@ -28,6 +28,7 @@ export namespace canvas {
 	    name: string;
 	    parent_account_id: number;
 	    root_account_id: number;
+	    workflow_state: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Account(source);
@@ -39,6 +40,7 @@ export namespace canvas {
 	        this.name = source["name"];
 	        this.parent_account_id = source["parent_account_id"];
 	        this.root_account_id = source["root_account_id"];
+	        this.workflow_state = source["workflow_state"];
 	    }
 	}
 	export class AssignmentDate {
@@ -143,6 +145,10 @@ export namespace canvas {
 	}
 	export class AssignmentResult {
 	    assignment_id: number;
+	    user_sis_id: string;
+	    stduent_name: string;
+	    qualification: string;
+	    course_name: string;
 	    title: string;
 	    max_score: number;
 	    min_score: number;
@@ -158,6 +164,10 @@ export namespace canvas {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.assignment_id = source["assignment_id"];
+	        this.user_sis_id = source["user_sis_id"];
+	        this.stduent_name = source["stduent_name"];
+	        this.qualification = source["qualification"];
+	        this.course_name = source["course_name"];
 	        this.title = source["title"];
 	        this.max_score = source["max_score"];
 	        this.min_score = source["min_score"];
@@ -196,8 +206,7 @@ export namespace canvas {
 	    end_at: string;
 	    is_public: boolean;
 	    enrollment_term_id: number;
-	    // Go type: struct { ID int "json:\"id\""; Name string "json:\"name\""; WorkflowState string "json:\"workflow_state\"" }
-	    account: any;
+	    account?: Account;
 	
 	    static createFrom(source: any = {}) {
 	        return new Course(source);
@@ -216,7 +225,7 @@ export namespace canvas {
 	        this.end_at = source["end_at"];
 	        this.is_public = source["is_public"];
 	        this.enrollment_term_id = source["enrollment_term_id"];
-	        this.account = this.convertValues(source["account"], Object);
+	        this.account = this.convertValues(source["account"], Account);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -247,6 +256,8 @@ export namespace canvas {
 	    grades: any;
 	    // Go type: struct { Name string "json:\"name\""; SISUserID string "json:\"sis_user_id\"" }
 	    user: any;
+	    enrollment_state: string;
+	    role: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Enrollment(source);
@@ -261,6 +272,8 @@ export namespace canvas {
 	        this.sis_section_id = source["sis_section_id"];
 	        this.grades = this.convertValues(source["grades"], Object);
 	        this.user = this.convertValues(source["user"], Object);
+	        this.enrollment_state = source["enrollment_state"];
+	        this.role = source["role"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -281,7 +294,38 @@ export namespace canvas {
 		    return a;
 		}
 	}
+	export class EnrollmentResult {
+	    sis_id: string;
+	    name: string;
+	    account: string;
+	    course_name: string;
+	    section: string;
+	    enrollment_state: string;
+	    course_state: string;
+	    current_grade: string;
+	    current_score: number;
+	    enrollment_role: string;
+	    gardes_url: string;
 	
+	    static createFrom(source: any = {}) {
+	        return new EnrollmentResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.sis_id = source["sis_id"];
+	        this.name = source["name"];
+	        this.account = source["account"];
+	        this.course_name = source["course_name"];
+	        this.section = source["section"];
+	        this.enrollment_state = source["enrollment_state"];
+	        this.course_state = source["course_state"];
+	        this.current_grade = source["current_grade"];
+	        this.current_score = source["current_score"];
+	        this.enrollment_role = source["enrollment_role"];
+	        this.gardes_url = source["gardes_url"];
+	    }
+	}
 	
 	export class Section {
 	    id: number;

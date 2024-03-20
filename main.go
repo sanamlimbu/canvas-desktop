@@ -21,7 +21,7 @@ func main() {
 	app := NewApp()
 
 	baseURL := getenv("CANVAS_BASE_URL", "https://skillsaustralia.instructure.com/api/v1")
-	accessToken := getenv("CANVAS_ACCESS_TOKEN", "18033~qQ5yZwSntWRrwRv4fOH2Y7ZnfmCN3jfpsnXLlzABxPeZoAkejTxQFNyrSN4DSxnq")
+	accessToken := getenv("CANVAS_ACCESS_TOKEN", "")
 	pageSizeStr := getenv("CANVAS_PAGE_SIZE", "100")
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil {
@@ -32,7 +32,7 @@ func main() {
 		println("Error:", fmt.Errorf("missing access token"))
 	}
 
-	//rl := rate.NewLimiter(rate.Every(10*time.Second), 1000)                           // 100 requests every 10 seconds
+	//rl := rate.NewLimiter(rate.Every(10*time.Second), 100)                           // 100 requests every 10 seconds
 	client := canvas.NewAPIClient(baseURL, accessToken, pageSize, http.DefaultClient)
 	controller := canvas.NewController(client)
 
@@ -70,9 +70,5 @@ func getenv(key string, other string) string {
 	}
 
 	value := os.Getenv(key)
-	if len(value) == 0 {
-		return other
-	}
-
 	return value
 }

@@ -11,9 +11,8 @@ import (
 )
 
 func main() {
-
 	baseURL := getenv("CANVAS_BASE_URL", "https://skillsaustralia.instructure.com/api/v1")
-	accessToken := getenv("CANVAS_ACCESS_TOKEN", "18033~qQ5yZwSntWRrwRv4fOH2Y7ZnfmCN3jfpsnXLlzABxPeZoAkejTxQFNyrSN4DSxnq")
+	accessToken := getenv("CANVAS_ACCESS_TOKEN", "")
 	pageSizeStr := getenv("CANVAS_PAGE_SIZE", "100")
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil {
@@ -71,10 +70,10 @@ func main() {
 }
 
 func getenv(key string, other string) string {
-	value := os.Getenv(key)
-	if value == "" {
+	if other != "" {
 		return other
 	}
 
+	value := os.Getenv(key)
 	return value
 }

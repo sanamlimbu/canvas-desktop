@@ -63,10 +63,10 @@ type SectionNeedsGrading struct {
 
 type AssignmentResult struct {
 	AssignmentID  int     `json:"assignment_id" csv:"-"`
-	UserSisID     string  `csv:"Student ID"`
-	StudentName   string  `csv:"Student Name"`
-	Qualification string  `csv:"Qualification"`
-	CourseName    string  `csv:"Course Name"`
+	UserSisID     string  `json:"user_sis_id" csv:"Student ID"`
+	StudentName   string  `json:"stduent_name" csv:"Student Name"`
+	Qualification string  `json:"qualification" csv:"Qualification"`
+	CourseName    string  `json:"course_name" csv:"Course Name"`
 	Title         string  `json:"title" csv:"Assignment"`
 	MaxScore      float32 `json:"max_score" csv:"Max Score"`
 	MinScore      float32 `json:"min_score" csv:"Min Score"`
@@ -90,7 +90,7 @@ type AssignmentDate struct {
 
 func (c *APIClient) GetAssignmentsResultsByUser(user *User) ([]*AssignmentResult, error) {
 	results := []*AssignmentResult{}
-	enrollments, err := c.GetEnrollmentsByUserID(user.ID)
+	enrollments, err := c.GetEnrollmentsByUser(user)
 	if err != nil {
 		return nil, terror.Error(err, fmt.Sprintf("cannot get enrollments of user ID: %s", user.SISUserID))
 	}

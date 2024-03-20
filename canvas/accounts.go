@@ -14,6 +14,7 @@ type Account struct {
 	Name            string `json:"name"`
 	ParentAccountID int    `json:"parent_account_id"`
 	RootAccountID   int    `json:"root_account_id"`
+	WorkflowState   string `json:"workflow_state"`
 }
 
 func (c *APIClient) GetAccountByID(accountID int) (*Account, error) {

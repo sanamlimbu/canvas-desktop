@@ -2,7 +2,6 @@ package canvas
 
 import (
 	"net/http"
-	"os"
 	"regexp"
 	"strings"
 
@@ -71,22 +70,4 @@ func getNextURL(linkTxt string) string {
 	}
 
 	return url
-}
-
-func (c *APIClient) GetAccessToken() string {
-	accessToken := getenv("CANVAS_ACCESS_TOKEN", "")
-	if accessToken != "" {
-		return "error"
-	}
-
-	return accessToken
-}
-
-func getenv(key string, other string) string {
-	value := os.Getenv(key)
-	if value == "" {
-		return other
-	}
-
-	return value
 }

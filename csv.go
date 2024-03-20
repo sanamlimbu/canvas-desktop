@@ -69,3 +69,19 @@ func (a *App) ExportAssignmentsStatus(assignments []*canvas.Assignment, account 
 
 	return nil
 }
+
+func (a *App) ExportEnrollmentsResults(results []*canvas.EnrollmentResult, userSisID string) error {
+	time := time.Now().Format("2006-01-02-15-04-05")
+	file, err := os.Create(fmt.Sprintf("%s-%s-enrollments_results.csv", userSisID, time))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	err = gocsv.MarshalFile(&results, file)
+	if err != nil {
+		return terror.Error(err, "cannot write rows to csv file")
+	}
+
+	return nil
+}

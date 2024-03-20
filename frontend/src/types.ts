@@ -1,6 +1,6 @@
 export enum Export {
   UngradedAssignments = "UNGRADED_ASSIGNMENTS",
-  StudentAssessments = "STUDENT_ASSESSMENTS",
+  StudentEnrollmentResults = "STUDENT_ENROLLMENTS_RESULT",
 }
 
 export interface Qualification {

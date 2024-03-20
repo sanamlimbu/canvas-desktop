@@ -33,7 +33,7 @@ func (c *APIClient) GetUserBySisID(sisID string) (*User, error) {
 	defer res.Body.Close()
 
 	if res.Status != "200 OK" {
-		return nil, terror.Error(fmt.Errorf("status code: %d", res.StatusCode), "something went wrong and did not receive 200 OK status")
+		return nil, terror.Error(fmt.Errorf("user not found"), "something went wrong and did not receive 200 OK status")
 	}
 
 	body, err := io.ReadAll(res.Body)

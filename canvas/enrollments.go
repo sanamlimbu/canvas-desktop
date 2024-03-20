@@ -26,17 +26,22 @@ type Enrollment struct {
 		Name      string `json:"name"`
 		SISUserID string `json:"sis_user_id"`
 	} `json:"user"`
+	EnrollmentState string `json:"enrollment_state"`
+	Role            string `json:"role"`
 }
 
 type EnrollmentResult struct {
-	StudentID     string  `csv:"Student ID"`
-	StudentName   string  `csv:"Student Name"`
-	Qualification string  `csv:"Qualification"`
-	CourseName    string  `csv:"Course Name"`
-	CourseStatus  string  `csv:"Course Status"`
-	CurrentGrade  string  `csv:"Current Grade"`
-	CurrentScore  float32 `csv:"Current Score"`
-	GradesURL     string  `csv:"Grades URL"`
+	SISID           string  `json:"sis_id" csv:"SIS ID"`
+	Name            string  `json:"name" csv:"Name"`
+	Account         string  `json:"account" csv:"Account"`
+	CourseName      string  `json:"course_name" csv:"Course Name"`
+	Section         string  `json:"section" csv:"Section"`
+	EnrollmentState string  `json:"enrollment_state" csv:"Enrollment State"`
+	CourseState     string  `json:"course_state" csv:"Course State"`
+	CurrentGrade    string  `json:"current_grade" csv:"Current Grade"`
+	CurrentScore    float32 `json:"current_score" csv:"Current Score"`
+	EnrollmentRole  string  `json:"enrollment_role" csv:"Enrollment Role"`
+	GradesURL       string  `json:"gardes_url" csv:"Grades URL"`
 }
 
 type EnrollmentType string
@@ -61,9 +66,15 @@ var AllEnrollmentType = []struct {
 	{ObserverEnrollment, "OBSERVER"},
 }
 
-func (c *APIClient) GetEnrollmentsByUserID(userID int) ([]*Enrollment, error) {
+// "deleted" removed
+var enrollmentStates []string = []string{"active", "invited", "creation_pending", "rejected", "completed", "inactive", "current_and_invited", "current_and_future", "current_and_concluded"}
+
+func (c *APIClient) GetEnrollmentsByUser(user *User) ([]*Enrollment, error) {
 	enrollments := []*Enrollment{}
-	requestURL := fmt.Sprintf("%s/users/%d/enrollments?page=1&per_page=%d", c.BaseURL, userID, c.PageSize)
+	requestURL := fmt.Sprintf("%s/users/%d/enrollments?page=1&per_page=%d", c.BaseURL, user.ID, c.PageSize)
+	for _, enrollmentState := range enrollmentStates {
+		requestURL += fmt.Sprintf(`&state[]=%s`, enrollmentState)
+	}
 
 	for {
 		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
@@ -105,28 +116,44 @@ func (c *APIClient) GetEnrollmentsByUserID(userID int) ([]*Enrollment, error) {
 	return enrollments, nil
 }
 
-func (c *APIClient) GetAllEnrollmentsResultsByUserID(userID int) ([]*EnrollmentResult, error) {
+func (c *APIClient) GetEnrollmentResultsByUser(user *User) ([]*EnrollmentResult, error) {
 	results := []*EnrollmentResult{}
-	enrollments, err := c.GetEnrollmentsByUserID(userID)
+	courses := make(map[int]*Course)
+
+	enrollments, err := c.GetEnrollmentsByUser(user)
 	if err != nil {
-		return nil, terror.Error(err, fmt.Sprintf("cannot get enrollments of user ID:%d", userID))
+		return nil, terror.Error(err, fmt.Sprintf("cannot get enrollments of user SIS ID:%s", user.SISUserID))
+	}
+
+	_courses, err := c.GetCoursesByUser(user)
+	if err != nil {
+		return nil, terror.Error(err, fmt.Sprintf("cannot get courses of user SIS ID:%s", user.SISUserID))
+	}
+
+	for _, course := range _courses {
+		courses[course.ID] = course
 	}
 
 	for _, enrollment := range enrollments {
-		course, err := c.GetCourseByID(enrollment.CourseID)
-		if err != nil {
-			fmt.Println(err.Error())
-			continue
-		}
 		result := &EnrollmentResult{
-			StudentID:     enrollment.User.SISUserID,
-			StudentName:   enrollment.User.Name,
-			Qualification: course.Account.Name,
-			CourseName:    course.Name,
-			CourseStatus:  course.WorkflowState,
-			CurrentGrade:  enrollment.Grades.CurrentGrade,
-			CurrentScore:  enrollment.Grades.CurrentScore,
-			GradesURL:     enrollment.Grades.HtmlUrl,
+			SISID:           enrollment.User.SISUserID,
+			Name:            enrollment.User.Name,
+			Section:         enrollment.SISSectionID,
+			CurrentGrade:    enrollment.Grades.CurrentGrade,
+			CurrentScore:    enrollment.Grades.CurrentScore,
+			GradesURL:       enrollment.Grades.HtmlUrl,
+			EnrollmentState: enrollment.EnrollmentState,
+			EnrollmentRole:  enrollment.Role,
+		}
+
+		if courses[enrollment.CourseID] == nil {
+			result.CourseName = ""
+			result.CourseState = ""
+			result.Account = ""
+		} else {
+			result.CourseName = courses[enrollment.CourseID].Name
+			result.CourseState = courses[enrollment.CourseID].WorkflowState
+			result.Account = courses[enrollment.CourseID].Account.Name
 		}
 
 		results = append(results, result)
