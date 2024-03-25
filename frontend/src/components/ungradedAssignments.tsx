@@ -60,7 +60,7 @@ export default function UngradedAssignments({
 
       await ExportAssignmentsStatus(assignments, account);
       setProgress(100);
-      setSuccessMsg("Successfully created 2 csv files in currrent folder.");
+      setSuccessMsg("Created 2 csv files in currrent folder.");
     } catch (err: any) {
       setErrorMsg(err);
     } finally {
@@ -133,7 +133,7 @@ export default function UngradedAssignments({
           icon={iconCheck}
           mt={"md"}
         >
-          Created 2 csv files in currrent folder.
+          {successMsg}
         </Alert>
       )}
     </div>

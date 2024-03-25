@@ -1,7 +1,7 @@
 import { Divider, Flex, Image, Select, Title } from "@mantine/core";
 import { useState } from "react";
 import SAILogo from "../assets/images/sai-logo.png";
-import StudentEnrollmentsResult from "../components/studentEnrollmentsResult";
+import EnrollmentsResult from "../components/enrollmentsResult";
 import ToggleTheme from "../components/toggleTheme";
 import UngradedSubmissions from "../components/ungradedAssignments";
 import { Export } from "../types";
@@ -31,6 +31,7 @@ function HomePage() {
           marginTop: "1em",
           marginBottom: "1em",
           maxWidth: "24em",
+          marginRight: "1em",
         }}
       >
         <Flex justify="space-between" mb="md">
@@ -68,8 +69,8 @@ function HomePage() {
           changeInProgress={changeInProgres}
         />
       )}
-      {exportItem === Export.StudentEnrollmentResults && (
-        <StudentEnrollmentsResult
+      {exportItem === Export.EnrollmentResults && (
+        <EnrollmentsResult
           inProgress={inProgress}
           changeInProgress={changeInProgres}
         />

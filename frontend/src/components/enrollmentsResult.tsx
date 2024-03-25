@@ -8,15 +8,15 @@ import {
 import { ExportEnrollmentsResults } from "../../wailsjs/go/main/App";
 import { colors } from "../theme";
 
-interface StudentEnrollmentsResultProps {
+interface EnrollmentsResultProps {
   inProgress: boolean;
   changeInProgress: (val: boolean) => void;
 }
 
-export default function StudentEnrollmentsResult({
+export default function EnrollmentsResult({
   inProgress,
   changeInProgress,
-}: StudentEnrollmentsResultProps) {
+}: EnrollmentsResultProps) {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const iconCheck = <IconCheck />;
@@ -38,7 +38,7 @@ export default function StudentEnrollmentsResult({
       const student = await GetUserBySisID(sisID); // not found will throw err "404"
       const results = await GetEnrollmentResultsByUser(student);
       await ExportEnrollmentsResults(results, student.sis_user_id);
-      setSuccessMsg("Successfully created a csv file in currrent folder.");
+      setSuccessMsg("Created a csv file in currrent folder.");
     } catch (err: any) {
       setErrorMsg(err);
     } finally {
@@ -49,7 +49,7 @@ export default function StudentEnrollmentsResult({
   return (
     <div style={{ maxWidth: "24em" }}>
       <Text fw={500} c={colors.blue}>
-        Export ungraded assignments report
+        Export enrollments result report
       </Text>
       <form onSubmit={handleSubmit}>
         <TextInput
@@ -57,6 +57,7 @@ export default function StudentEnrollmentsResult({
           placeholder="SIS ID is case sensitive."
           mb={"md"}
           onChange={(event) => setSisID(event.currentTarget.value)}
+          disabled={inProgress}
         />
         <Button
           type="submit"
@@ -91,7 +92,7 @@ export default function StudentEnrollmentsResult({
           icon={iconCheck}
           mt={"md"}
         >
-          Created a csv file in currrent folder.
+          {successMsg}
         </Alert>
       )}
     </div>
