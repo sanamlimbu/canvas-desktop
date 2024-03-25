@@ -6,7 +6,6 @@ import {
 } from "../../wailsjs/go/canvas/APIClient";
 import { ExportAssignmentsStatus } from "../../wailsjs/go/main/App";
 import { canvas } from "../../wailsjs/go/models";
-import "../App.css";
 import { Qualifications } from "../constant";
 
 interface UngradedAssignmentsProps {

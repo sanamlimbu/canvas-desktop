@@ -4,7 +4,6 @@ import {
   GetUserBySisID,
 } from "../../wailsjs/go/canvas/APIClient";
 import { ExportEnrollmentsResults } from "../../wailsjs/go/main/App";
-import "../App.css";
 import Loader from "./loader";
 
 interface StudentEnrollmentsResultProps {
