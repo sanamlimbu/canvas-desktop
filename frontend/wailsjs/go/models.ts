@@ -1,5 +1,14 @@
 export namespace canvas {
 	
+	export enum AssignmentBucket {
+	    PAST = "past",
+	    OVERDUE = "overdue",
+	    UPDATED = "undated",
+	    UNGRADED = "ungraded",
+	    UNSUBMITTED = "unsubmitted",
+	    UPCOMING = "upcoming",
+	    FUTURE = "future",
+	}
 	export enum CourseEnrollmentType {
 	    TEACHER = "teacher",
 	    STUDENT = "student",
@@ -13,15 +22,6 @@ export namespace canvas {
 	    TA = "TaEnrollment",
 	    DESIGNER = "DesignerEnrollment",
 	    OBSERVER = "ObserverEnrollment",
-	}
-	export enum AssignmentBucket {
-	    PAST = "past",
-	    OVERDUE = "overdue",
-	    UPDATED = "undated",
-	    UNGRADED = "ungraded",
-	    UNSUBMITTED = "unsubmitted",
-	    UPCOMING = "upcoming",
-	    FUTURE = "future",
 	}
 	export class Account {
 	    id: number;
