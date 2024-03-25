@@ -1,13 +1,11 @@
-import { Input } from "@mantine/core";
+import { Select } from "@mantine/core";
 import { useState } from "react";
 import StudentEnrollmentsResult from "../components/studentEnrollmentsResult";
 import UngradedSubmissions from "../components/ungradedAssignments";
 import { Export } from "../types";
 
 function HomePage() {
-  const [exportItem, setExportItem] = useState<Export>(
-    Export.UngradedAssignments
-  );
+  const [exportItem, setExportItem] = useState<string | null>(null);
   const [inProgress, setInProgress] = useState(false);
 
   const changeInProgres = (val: boolean) => {
@@ -15,37 +13,34 @@ function HomePage() {
   };
 
   return (
-    <div id="App">
+    <div
+      id="App"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        maxWidth: "40em",
+        marginLeft: "auto",
+        marginRight: "auto",
+      }}
+    >
       <div
         style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          gap: "1em",
-          paddingTop: "1em",
-          paddingBottom: "1em",
-          borderBottom: "1px solid white",
+          marginTop: "1em",
           marginBottom: "1em",
+          maxWidth: "24em",
         }}
       >
-        <label>Please select an action:</label>
-        <select
-          onChange={(e) => {
-            setExportItem(e.target.value as Export);
-          }}
+        <Select
+          label="Please select an action."
+          placeholder="Pick an action"
+          value={exportItem}
+          data={Object.values(Export)}
+          onChange={setExportItem}
+          clearable
+          searchable
           disabled={inProgress}
-        >
-          <option value={Export.UngradedAssignments} style={{ padding: 10 }}>
-            Export ungraded assignments
-          </option>
-          <option
-            value={Export.StudentEnrollmentResults}
-            style={{ padding: 10 }}
-          >
-            Export student enrollments result
-          </option>
-        </select>
-        <Input placeholder="Input component" />
+        />
       </div>
       {exportItem === Export.UngradedAssignments && (
         <UngradedSubmissions

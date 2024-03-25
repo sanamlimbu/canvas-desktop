@@ -1,60 +1,33 @@
-import { Qualification } from "./types";
-
-export const Qualifications: Qualification[] = [
-  {
-    AccountID: 119,
-    Name: "Certificate III in Early Childhood Education and Care",
-  },
-  {
-    AccountID: 120,
-    Name: "Diploma of Early Childhood Education and Care",
-  },
-  {
-    AccountID: 133,
-    Name: "Certificate IV in Kitchen Management",
-  },
-  {
-    AccountID: 134,
-    Name: "Diploma of Hospitality Management",
-  },
-  {
-    AccountID: 130,
-    Name: "Certificate III in Automotive",
-  },
-  {
-    AccountID: 129,
-    Name: "Certificate IV in Automotive",
-  },
-  {
-    AccountID: 128,
-    Name: "Diploma of Automotive",
-  },
-  {
-    AccountID: 123,
-    Name: "Bricklaying",
-  },
-  {
-    AccountID: 116,
-    Name: "Certificate III in Carpentry",
-  },
-  {
-    AccountID: 114,
-    Name: "Telecommunication",
-  },
-  {
-    AccountID: 124,
-    Name: "Tiling",
-  },
-  {
-    AccountID: 112,
-    Name: "Advanced Diploma of Business",
-  },
-  {
-    AccountID: 111,
-    Name: "Diploma of Business",
-  },
-  {
-    AccountID: 113,
-    Name: "Graduate Diploma of Management (Learning)",
-  },
+export const Qualifications = [
+  "Certificate III in Early Childhood Education and Care",
+  "Diploma of Early Childhood Education and Care",
+  "Certificate IV in Kitchen Management",
+  "Diploma of Hospitality Management",
+  "Certificate III in Automotive",
+  "Certificate IV in Automotive",
+  "Diploma of Automotive",
+  "Bricklaying",
+  "Certificate III in Carpentry",
+  "Telecommunication",
+  "Tiling",
+  "Advanced Diploma of Business",
+  "Diploma of Business",
+  "Graduate Diploma of Management (Learning)",
 ];
+
+export const QualificationsWithAccountID = new Map<string, number>([
+  ["Certificate III in Early Childhood Education and Care", 119],
+  ["Diploma of Early Childhood Education and Care", 120],
+  ["Certificate IV in Kitchen Management", 133],
+  ["Diploma of Hospitality Management", 134],
+  ["Certificate III in Automotive", 130],
+  ["Certificate IV in Automotive", 129],
+  ["Diploma of Automotive", 128],
+  ["Bricklaying", 123],
+  ["Certificate III in Carpentry", 116],
+  ["Telecommunication", 114],
+  ["Tiling", 124],
+  ["Advanced Diploma of Business", 112],
+  ["Diploma of Business", 111],
+  ["Graduate Diploma of Management (Learning)", 113],
+]);

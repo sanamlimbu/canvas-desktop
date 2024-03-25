@@ -1,10 +1,11 @@
+import { Alert, Button, Loader, Text, TextInput } from "@mantine/core";
+import { IconCheck, IconInfoCircle } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import {
   GetEnrollmentResultsByUser,
   GetUserBySisID,
 } from "../../wailsjs/go/canvas/APIClient";
 import { ExportEnrollmentsResults } from "../../wailsjs/go/main/App";
-import Loader from "./loader";
 
 interface StudentEnrollmentsResultProps {
   inProgress: boolean;
@@ -18,6 +19,8 @@ export default function StudentEnrollmentsResult({
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const sisIdInput = useRef<HTMLInputElement>(null);
+  const iconCheck = <IconCheck />;
+  const iconInfoCircle = <IconInfoCircle />;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,44 +47,48 @@ export default function StudentEnrollmentsResult({
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: "0.5em" }}>
-        <label>Export ungraded assignments report</label>
-      </div>
-      <div style={{ maxWidth: "40rem", margin: "0 auto", padding: "0 1rem" }}>
-        <form
-          id="app-cover"
-          onSubmit={handleSubmit}
-          className="flex-column"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            maxWidth: "40rem",
-            gap: "1em",
-          }}
+    <div style={{ maxWidth: "24em" }}>
+      <Text fw={500} c="blue">
+        Export ungraded assignments report
+      </Text>
+      <form onSubmit={handleSubmit}>
+        <TextInput
+          label="Please enter SIS ID."
+          placeholder="SIS ID is case sensitive."
+          mb={"md"}
+        />
+        <Button
+          type="submit"
+          disabled={inProgress}
+          variant="outline"
+          color="cyan"
         >
-          <div>
-            <label>Please enter student's SIS ID: </label>
-            <input type="text" ref={sisIdInput} />
-          </div>
-          <button type="submit" disabled={inProgress}>
-            Start
-          </button>
-        </form>
-      </div>
-
-      {inProgress && (
-        <div style={{ marginTop: "0.5em" }}>
-          <Loader />
-        </div>
+          Start
+        </Button>
+      </form>
+      {inProgress && <Loader mt={"md"} />}
+      {errorMsg && (
+        <Alert
+          variant="light"
+          color="red"
+          title="Error"
+          icon={iconInfoCircle}
+          mt={"md"}
+        >
+          {errorMsg}
+        </Alert>
       )}
-
-      <div style={{ marginTop: "0.5em" }}>
-        {errorMsg && <span style={{ color: "#ef5350" }}> {errorMsg}</span>}
-        {successMsg && <span>{successMsg}</span>}
-      </div>
+      {successMsg && (
+        <Alert
+          variant="light"
+          color="teal"
+          title="Successful"
+          icon={iconCheck}
+          mt={"md"}
+        >
+          Created a csv file in currrent folder.
+        </Alert>
+      )}
     </div>
   );
 }

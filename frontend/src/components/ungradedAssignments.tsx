@@ -1,3 +1,5 @@
+import { Alert, Button, Progress, Select, Text } from "@mantine/core";
+import { IconCheck, IconInfoCircle } from "@tabler/icons-react";
 import { useState } from "react";
 import {
   GetAccountByID,
@@ -6,7 +8,7 @@ import {
 } from "../../wailsjs/go/canvas/APIClient";
 import { ExportAssignmentsStatus } from "../../wailsjs/go/main/App";
 import { canvas } from "../../wailsjs/go/models";
-import { Qualifications } from "../constant";
+import { Qualifications, QualificationsWithAccountID } from "../constant";
 
 interface UngradedAssignmentsProps {
   inProgress: boolean;
@@ -17,19 +19,22 @@ export default function UngradedAssignments({
   inProgress,
   changeInProgress,
 }: UngradedAssignmentsProps) {
-  const qualifications = Qualifications;
-  const [accountID, setAccountID] = useState<number>(
-    qualifications[0].AccountID
-  );
+  const [accountID, setAccountID] = useState<number | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [progress, setProgress] = useState(0);
+  const iconCheck = <IconCheck />;
+  const iconInfoCircle = <IconInfoCircle />;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     changeInProgress(true);
     setSuccessMsg("");
     setErrorMsg("");
+
+    if (accountID === null) {
+      return;
+    }
 
     try {
       const assignments: canvas.Assignment[] = [];
@@ -64,56 +69,72 @@ export default function UngradedAssignments({
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: "0.5em" }}>
-        <label>Export ungraded assignments report</label>
-      </div>
-      <div style={{ maxWidth: "40rem", margin: "0 auto", padding: "0 1rem" }}>
-        <form
-          id="app-cover"
-          onSubmit={handleSubmit}
-          className="flex-column"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            maxWidth: "40rem",
-            gap: "1em",
+    <div style={{ maxWidth: "24em" }}>
+      <Text fw={500} c="blue">
+        Export ungraded assignments report
+      </Text>
+      <form onSubmit={handleSubmit}>
+        <Select
+          label="Select a qualification."
+          placeholder="Pick a qualification"
+          data={Qualifications}
+          onChange={(val) => {
+            const accountID = val
+              ? QualificationsWithAccountID.get(val)
+              : undefined;
+            accountID ? setAccountID(accountID) : null;
           }}
+          mb={"md"}
+          disabled={inProgress}
+          searchable
+          clearable
+        />
+        <Button
+          type="submit"
+          disabled={inProgress}
+          variant="outline"
+          color="cyan"
         >
-          <div>
-            <label>Select a qualification: </label>
-            <select
-              onChange={(e) => setAccountID(Number(e.target.value))}
-              disabled={inProgress}
-            >
-              {qualifications.map((qualification) => (
-                <option
-                  key={qualification.AccountID}
-                  value={qualification.AccountID}
-                >
-                  {qualification.Name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button type="submit" disabled={inProgress}>
-            Start
-          </button>
-        </form>
-      </div>
+          Start
+        </Button>
+      </form>
       {inProgress && (
-        <div style={{ marginTop: "0.5em" }}>
-          <span>Completed </span>
-          <progress value={progress} max={100} />
-          <span> {Math.floor(progress)}%</span>
+        <div>
+          <Progress
+            color="teal"
+            radius="md"
+            value={progress}
+            striped
+            animated
+            mt={"md"}
+          />
+          <Text c="blue" fw={700} ta="center" size="md">
+            {Math.floor(progress)}%
+          </Text>
         </div>
       )}
-      <div style={{ marginTop: "0.5em" }}>
-        {errorMsg && <span style={{ color: "#ef5350" }}> {errorMsg}</span>}
-        {successMsg && <span>{successMsg}</span>}
-      </div>
+      {errorMsg && (
+        <Alert
+          variant="light"
+          color="red"
+          title="Error"
+          icon={iconInfoCircle}
+          mt={"md"}
+        >
+          {errorMsg}
+        </Alert>
+      )}
+      {successMsg && (
+        <Alert
+          variant="light"
+          color="teal"
+          title="Successful"
+          icon={iconCheck}
+          mt={"md"}
+        >
+          Created 2 csv files in currrent folder.
+        </Alert>
+      )}
     </div>
   );
 }
