@@ -5,7 +5,6 @@ import (
 	"canvas-desktop/canvas"
 	"embed"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 
@@ -17,11 +16,14 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
+//go:embed .env
+var config embed.FS
+
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
-	env, err := readEnv()
+	env, err := readEnv(config)
 	if err != nil {
 		panic(err)
 	}
@@ -77,9 +79,9 @@ func main() {
 	}
 }
 
-func readEnv() (map[string]string, error) {
+func readEnv(config embed.FS) (map[string]string, error) {
 	env := make(map[string]string)
-	file, err := os.Open(".env")
+	file, err := config.Open(".env")
 	if err != nil {
 		return nil, err
 	}
