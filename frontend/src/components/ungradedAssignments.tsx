@@ -72,7 +72,7 @@ export default function UngradedAssignments({
   return (
     <div style={{ maxWidth: "24em" }}>
       <Text fw={500} c={colors.blue}>
-        Export ungraded assignments report
+        Export ungraded assignments
       </Text>
       <form onSubmit={handleSubmit}>
         <Select

@@ -49,7 +49,7 @@ export default function EnrollmentsResult({
   return (
     <div style={{ maxWidth: "24em" }}>
       <Text fw={500} c={colors.blue}>
-        Export enrollments result report
+        Export enrollments result
       </Text>
       <form onSubmit={handleSubmit}>
         <TextInput
