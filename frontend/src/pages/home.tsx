@@ -1,6 +1,8 @@
-import { Select } from "@mantine/core";
+import { Divider, Flex, Image, Select, Title } from "@mantine/core";
 import { useState } from "react";
+import SAILogo from "../assets/images/sai-logo.png";
 import StudentEnrollmentsResult from "../components/studentEnrollmentsResult";
+import ToggleTheme from "../components/toggleTheme";
 import UngradedSubmissions from "../components/ungradedAssignments";
 import { Export } from "../types";
 
@@ -31,6 +33,23 @@ function HomePage() {
           maxWidth: "24em",
         }}
       >
+        <Flex justify="space-between" mb="md">
+          <Image src={SAILogo} height={100} fit="contain" width="auto" />
+          <ToggleTheme />
+        </Flex>
+
+        <Title
+          style={{
+            background: "linear-gradient(to right, #007FFF, #0059B2)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            fontWeight: "bold",
+          }}
+          mb={"md"}
+        >
+          Canvas reports
+        </Title>
+
         <Select
           label="Please select an action."
           placeholder="Pick an action"
@@ -41,6 +60,7 @@ function HomePage() {
           searchable
           disabled={inProgress}
         />
+        {exportItem && <Divider mt={"lg"} />}
       </div>
       {exportItem === Export.UngradedAssignments && (
         <UngradedSubmissions

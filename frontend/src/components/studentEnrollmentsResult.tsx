@@ -1,11 +1,12 @@
-import { Alert, Button, Loader, Text, TextInput } from "@mantine/core";
+import { Alert, Button, Flex, Loader, Text, TextInput } from "@mantine/core";
 import { IconCheck, IconInfoCircle } from "@tabler/icons-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   GetEnrollmentResultsByUser,
   GetUserBySisID,
 } from "../../wailsjs/go/canvas/APIClient";
 import { ExportEnrollmentsResults } from "../../wailsjs/go/main/App";
+import { colors } from "../theme";
 
 interface StudentEnrollmentsResultProps {
   inProgress: boolean;
@@ -18,13 +19,13 @@ export default function StudentEnrollmentsResult({
 }: StudentEnrollmentsResultProps) {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-  const sisIdInput = useRef<HTMLInputElement>(null);
   const iconCheck = <IconCheck />;
   const iconInfoCircle = <IconInfoCircle />;
+  const [sisID, setSisID] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!sisIdInput.current?.value) {
+    if (sisID === "") {
       setErrorMsg("Please enter a valid SIS ID.");
       return;
     }
@@ -34,9 +35,8 @@ export default function StudentEnrollmentsResult({
     setErrorMsg("");
 
     try {
-      const student = await GetUserBySisID(sisIdInput.current?.value); // not found will throw err "404"
+      const student = await GetUserBySisID(sisID); // not found will throw err "404"
       const results = await GetEnrollmentResultsByUser(student);
-      console.log("total ", results.length);
       await ExportEnrollmentsResults(results, student.sis_user_id);
       setSuccessMsg("Successfully created a csv file in currrent folder.");
     } catch (err: any) {
@@ -48,7 +48,7 @@ export default function StudentEnrollmentsResult({
 
   return (
     <div style={{ maxWidth: "24em" }}>
-      <Text fw={500} c="blue">
+      <Text fw={500} c={colors.blue}>
         Export ungraded assignments report
       </Text>
       <form onSubmit={handleSubmit}>
@@ -56,6 +56,7 @@ export default function StudentEnrollmentsResult({
           label="Please enter SIS ID."
           placeholder="SIS ID is case sensitive."
           mb={"md"}
+          onChange={(event) => setSisID(event.currentTarget.value)}
         />
         <Button
           type="submit"
@@ -66,7 +67,11 @@ export default function StudentEnrollmentsResult({
           Start
         </Button>
       </form>
-      {inProgress && <Loader mt={"md"} />}
+      {inProgress && (
+        <Flex align={"center"} justify={"center"}>
+          <Loader mt={"md"} size={"sm"} />
+        </Flex>
+      )}
       {errorMsg && (
         <Alert
           variant="light"
@@ -82,7 +87,7 @@ export default function StudentEnrollmentsResult({
         <Alert
           variant="light"
           color="teal"
-          title="Successful"
+          title="Success"
           icon={iconCheck}
           mt={"md"}
         >

@@ -9,6 +9,7 @@ import {
 import { ExportAssignmentsStatus } from "../../wailsjs/go/main/App";
 import { canvas } from "../../wailsjs/go/models";
 import { Qualifications, QualificationsWithAccountID } from "../constant";
+import { colors } from "../theme";
 
 interface UngradedAssignmentsProps {
   inProgress: boolean;
@@ -70,7 +71,7 @@ export default function UngradedAssignments({
 
   return (
     <div style={{ maxWidth: "24em" }}>
-      <Text fw={500} c="blue">
+      <Text fw={500} c={colors.blue}>
         Export ungraded assignments report
       </Text>
       <form onSubmit={handleSubmit}>
@@ -128,7 +129,7 @@ export default function UngradedAssignments({
         <Alert
           variant="light"
           color="teal"
-          title="Successful"
+          title="Success"
           icon={iconCheck}
           mt={"md"}
         >
