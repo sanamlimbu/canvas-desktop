@@ -1,12 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"canvas-desktop/canvas"
 	"embed"
-	"fmt"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -20,19 +21,31 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
-	baseURL := getenv("CANVAS_BASE_URL", "https://skillsaustralia.instructure.com/api/v1")
-	accessToken := getenv("CANVAS_ACCESS_TOKEN", "")
-	pageSizeStr := getenv("CANVAS_PAGE_SIZE", "100")
+	env, err := readEnv()
+	if err != nil {
+		panic(err)
+	}
+
+	baseURL := env["CANVAS_BASE_URL"]
+	if baseURL == "" {
+		panic("no canvas base url provided")
+	}
+
+	accessToken := env["CANVAS_ACCESS_TOKEN"]
+	if accessToken == "" {
+		panic("no canvas access token provided")
+	}
+
+	pageSizeStr := env["CANVAS_PAGE_SIZE"]
+	if pageSizeStr == "" {
+		panic("no canvas page size provided")
+	}
+
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil {
-		println("Error:", err.Error())
+		panic(err)
 	}
 
-	if accessToken == "" {
-		println("Error:", fmt.Errorf("missing access token"))
-	}
-
-	//rl := rate.NewLimiter(rate.Every(10*time.Second), 100)                           // 100 requests every 10 seconds
 	client := canvas.NewAPIClient(baseURL, accessToken, pageSize, http.DefaultClient)
 	controller := canvas.NewController(client)
 
@@ -64,11 +77,23 @@ func main() {
 	}
 }
 
-func getenv(key string, other string) string {
-	if other != "" {
-		return other
+func readEnv() (map[string]string, error) {
+	env := make(map[string]string)
+	file, err := os.Open(".env")
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		arr := strings.Split(scanner.Text(), "=")
+		env[arr[0]] = arr[1]
 	}
 
-	value := os.Getenv(key)
-	return value
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return env, nil
 }
