@@ -70,7 +70,7 @@ export default function UngradedAssignments({
   };
 
   return (
-    <div style={{ maxWidth: "24em" }}>
+    <div style={{ background: "100%" }}>
       <Text fw={500} c={colors.blue}>
         Export ungraded assignments
       </Text>

@@ -47,7 +47,7 @@ export default function EnrollmentsResult({
   };
 
   return (
-    <div style={{ maxWidth: "24em" }}>
+    <div>
       <Text fw={500} c={colors.blue}>
         Export enrollments result
       </Text>
