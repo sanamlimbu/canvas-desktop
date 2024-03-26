@@ -29,7 +29,6 @@ func ExportAssignmentsResults(results []*canvas.AssignmentResult, userSisID stri
 }
 
 func ExportAssignmentsStatus(assignments []*canvas.Assignment, account *canvas.Account) error {
-	fmt.Println(len(assignments))
 	time := time.Now().Format("2006-01-02-15-04-05")
 	name := canvas.ReplaceSpaceInStr(account.Name, "_")
 
@@ -68,7 +67,21 @@ func ExportAssignmentsStatus(assignments []*canvas.Assignment, account *canvas.A
 		return terror.Error(err, "cannot write rows to csv file")
 	}
 
-	fmt.Println("Done exporting")
+	return nil
+}
+
+func ExportAssignmentGradingStandards(assignments []*canvas.AssignmentGradingStandard) error {
+	time := time.Now().Format("2006-01-02-15-04-05")
+	file, err := os.Create(fmt.Sprintf("EB_assignments-%s.csv", time))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	err = gocsv.MarshalFile(&assignments, file)
+	if err != nil {
+		return terror.Error(err, "cannot write rows to csv file")
+	}
 
 	return nil
 }

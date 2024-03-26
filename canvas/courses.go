@@ -32,18 +32,22 @@ var AllCourseEnrollmentType = []struct {
 }
 
 type Course struct {
-	ID               int      `json:"id"`
-	Name             string   `json:"name"`
-	CourseCode       string   `json:"course_code" `
-	AccountID        int      `json:"account_id"`
-	RootAccountID    int      `json:"root_account_id"`
-	FriendlyName     string   `json:"friendly_name"`
-	WorkflowState    string   `json:"workflow_state"`
-	StartAt          string   `json:"start_at"`
-	EndAt            string   `json:"end_at"`
-	IsPublic         bool     `json:"is_public"`
-	EnrollmentTermID int      `json:"enrollment_term_id"`
-	Account          *Account `json:"account"`
+	ID                int        `json:"id" csv:"-"`
+	AccountName       string     `json:"account_name" csv:"Account"`
+	CourseCode        string     `json:"course_code" csv:"Course Code"`
+	Name              string     `json:"name" csv:"Course Name"`
+	GradingStandardID int        `json:"grading_standard_id" csv:"Grading Standard ID"`
+	GradingStandard   string     `json:"grading_standard" csv:"Grading Standard"`
+	AccountID         int        `json:"account_id" csv:"-"`
+	RootAccountID     int        `json:"root_account_id" csv:"-"`
+	FriendlyName      string     `json:"friendly_name" csv:"-"`
+	WorkflowState     string     `json:"workflow_state" csv:"Course State"`
+	StartAt           string     `json:"start_at" csv:"Start At"`
+	EndAt             string     `json:"end_at" csv:"End At"`
+	IsPublic          bool       `json:"is_public" csv:"-"`
+	EnrollmentTermID  int        `json:"enrollment_term_id" csv:"-"`
+	Account           *Account   `json:"account" csv:"-"`
+	Sections          []*Section `json:"sections" csv:"-"`
 }
 
 func (c *APIClient) GetCourseByID(id int) (*Course, error) {
@@ -119,10 +123,9 @@ func (c *APIClient) GetCoursesByAccount(account *Account, enrollmentType CourseE
 	return courses, nil
 }
 
-// enrollmentType allowed values: teacher, student, ta, observer, designer
-func (c *APIClient) GetCoursesByAccountID(accountID int, enrollmentType CourseEnrollmentType) ([]*Course, error) {
+func (c *APIClient) GetCoursesByAccountID(accountID int) ([]*Course, error) {
 	courses := []*Course{}
-	requestURL := fmt.Sprintf("%s/accounts/%d/courses?page=1&per_page=%d&enrollment_type[]=%s&include[]=account", c.BaseURL, accountID, c.PageSize, enrollmentType)
+	requestURL := fmt.Sprintf("%s/accounts/%d/courses?page=1&per_page=%d&include[]=account", c.BaseURL, accountID, c.PageSize)
 
 	for {
 		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
@@ -162,7 +165,7 @@ func (c *APIClient) GetCoursesByAccountID(accountID int, enrollmentType CourseEn
 
 func (c *APIClient) GetCoursesByUser(user *User) ([]*Course, error) {
 	courses := []*Course{}
-	requestURL := fmt.Sprintf("%s/users/%d/courses?page=1&per_page=%d&include[]=account", c.BaseURL, user.ID, c.PageSize)
+	requestURL := fmt.Sprintf("%s/users/%d/courses?page=1&per_page=%d&include[]=account&include[]=sections", c.BaseURL, user.ID, c.PageSize)
 
 	for {
 		req, err := http.NewRequest(http.MethodGet, requestURL, nil)

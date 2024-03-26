@@ -80,7 +80,7 @@ func (c *APIClient) GetUngradedSubmissionsByAccount(account *Account) ([]*Submis
 	}
 
 	for _, course := range courses[:2] {
-		assignments, err := c.GetAssignmentsByCourse(course, "ungraded")
+		assignments, err := c.GetAssignmentsByCourseAndBucket(course, "ungraded")
 		if err != nil {
 			return nil, terror.Error(err, "error retreiving assignments")
 		}
